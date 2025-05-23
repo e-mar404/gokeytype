@@ -1,6 +1,8 @@
 package test
 
 import (
+  "strings"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -8,7 +10,7 @@ const (
 	GRAY = "\033[90m"
 	RED = "\033[31m"
 	GREEN = "\033[32m"
-  CURSOR_BG = "\033[100m"
+  CURSOR_BG = "\033[2;5;100m"
 	RESET = "\033[0m"
 )
 
@@ -77,23 +79,24 @@ func (t Test) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (t Test) View() string {
-	str := ""
+  str := make([]string, len(t.text))
 	for i, letter := range(t.text) {
 		switch t.status[i] {
 		case CORRECT:
-			str += GREEN + string(letter) + RESET
+			str[i] = GREEN + string(letter) + RESET
 		case INCORRECT:
       if letter == ' ' {
         letter = '_'
       }
-			str += RED + string(letter) + RESET
+			str[i] = RED + string(letter) + RESET
 		default:
-			str += GRAY + string(letter) + RESET
+			str[i] = GRAY + string(letter) + RESET
 		}
 	}
 
-  
-	return str + "\n"
+  str[t.position] = CURSOR_BG + str[t.position] + RESET
+
+	return strings.Join(str, "") + "\n"
 }
 
 func finishTest() tea.Msg {
