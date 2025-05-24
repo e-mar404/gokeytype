@@ -5,11 +5,11 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/e-mar404/gokeytype/internal/test"
+	"github.com/e-mar404/gokeytype/internal/menu"
 )
 
 func main() {
-	p := tea.NewProgram(test.New())
+	p := tea.NewProgram(menu.New())
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)

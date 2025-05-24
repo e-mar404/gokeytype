@@ -15,32 +15,6 @@ const (
 )
 
 type finishMessage string
-type status int
-type Test struct {
-	text []byte
-	status []status
-	position int
-}
-
-const (
-  Empty status = iota
-	INCORRECT
-	CORRECT
-)
-
-func New() Test {
-  testText := "this is a longer test"
-  statusSlice := make([]status, len(testText))
-  for i := range(statusSlice) {
-    statusSlice[i] = Empty 
-  }
-
-	return Test {
-		text: []byte(testText),
-		status: statusSlice, 
-		position: 0,
-	}
-}
 
 func (t Test) Init() tea.Cmd{
 	return nil
@@ -48,6 +22,7 @@ func (t Test) Init() tea.Cmd{
 
 func (t Test) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+
 	case tea.KeyMsg:
 		input := msg.String()
 		if input == "ctrl+c" {
@@ -72,6 +47,7 @@ func (t Test) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     if t.position == len(t.text) {
       return t, finishTest
     }
+
   case finishMessage:
     return t, tea.Quit
 	}
@@ -94,7 +70,9 @@ func (t Test) View() string {
 		}
 	}
 
-  str[t.position] = CURSOR_BG + str[t.position] + RESET
+  if t.position < len(t.text) {
+    str[t.position] = CURSOR_BG + str[t.position] + RESET
+  }
 
 	return strings.Join(str, "") + "\n"
 }

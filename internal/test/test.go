@@ -1,0 +1,32 @@
+package test
+
+type status int
+type Test struct {
+	text []byte
+	status []status
+	position int
+}
+
+const (
+  Empty status = iota
+	INCORRECT
+	CORRECT
+)
+
+func New() Test {
+  testText, statusSlice := createText()
+	return Test {
+		text: []byte(testText),
+		status: statusSlice, 
+		position: 0,
+	}
+}
+
+func createText() ([]byte, []status) {
+  text := []byte("this is a long test")
+  statusSlice:= make([]status, len(text))
+  for i := range(statusSlice) {
+    statusSlice[i] = Empty 
+  }
+  return text, statusSlice
+}
