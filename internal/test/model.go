@@ -1,19 +1,30 @@
 package test
 
 import (
-  "strings"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/e-mar404/gokeytype/internal/colors"
 )
 
-const (
-	GRAY = "\033[90m"
-	RED = "\033[31m"
-	GREEN = "\033[32m"
-  CURSOR_BG = "\033[2;5;100m"
-	RESET = "\033[0m"
-)
+var (
+  correctStyle = lipgloss.NewStyle(). 
+    Inherit(colors.AppStyle)
 
+  incorrectStyle = lipgloss.NewStyle(). 
+    Inherit(colors.AppStyle). 
+    Foreground(lipgloss.Color(colors.RED))
+
+  emptyStyle = lipgloss.NewStyle(). 
+    Inherit(colors.AppStyle). 
+    Foreground(lipgloss.Color(colors.OVERLAY_1))
+
+  cursorStyle = lipgloss.NewStyle(). 
+    Inherit(colors.AppStyle). 
+    Background(lipgloss.Color(colors.WHITE)).
+    Foreground(lipgloss.Color(colors.SURFACE_0))
+)
 type finishMessage string
 
 func (t Test) Init() tea.Cmd{
@@ -56,25 +67,41 @@ func (t Test) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (t Test) View() string {
   str := make([]string, len(t.text))
+
 	for i, letter := range(t.text) {
 		switch t.status[i] {
 		case CORRECT:
-			str[i] = GREEN + string(letter) + RESET
+      coloredLetter := correctStyle.Render(string(letter))
+
+			str[i] = coloredLetter
 		case INCORRECT:
       if letter == ' ' {
         letter = '_'
       }
-			str[i] = RED + string(letter) + RESET
+      coloredLetter := incorrectStyle.Render(string(letter))
+
+			str[i] = coloredLetter
 		default:
-			str[i] = GRAY + string(letter) + RESET
-		}
+      var coloredLetter string
+      if i == t.position {
+        coloredLetter = cursorStyle.Render(string(letter))
+      } else {
+        coloredLetter = emptyStyle.Render(string(letter))
+      }
+
+			str[i] = coloredLetter
+		} 
 	}
 
-  if t.position < len(t.text) {
-    str[t.position] = CURSOR_BG + str[t.position] + RESET
-  }
+  text := strings.Join(str, "")
+  testStyle := lipgloss.NewStyle(). 
+    Inherit(colors.AppStyle).
+    Width(t.windowWidth). 
+    Height(t.windowHeight).
+    PaddingTop(t.windowHeight/2 - (lipgloss.Height(text)/2))
 
-	return strings.Join(str, "") + "\n"
+
+	return testStyle.Render(text) + "\n"
 }
 
 func finishTest() tea.Msg {

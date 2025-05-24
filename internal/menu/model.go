@@ -5,7 +5,17 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/e-mar404/gokeytype/internal/colors"
 	"github.com/e-mar404/gokeytype/internal/test"
+)
+
+var (
+  logoStyle = colors.Foreground(colors.LAVENDER). 
+    PaddingBottom(3).
+    Background(lipgloss.Color(colors.BASE))
+
+  optionsStyle = colors.Foreground(colors.PINK). 
+    Inherit(colors.AppStyle)
 )
 
 type menu struct {
@@ -17,8 +27,7 @@ type menu struct {
 
 func New() menu {
   return menu {
-    logo: `
- ____ ____ ____ ____ ____ ____ ____ ____ ____ 
+    logo: ` ____ ____ ____ ____ ____ ____ ____ ____ ____
 ||G |||o |||k |||e |||y |||t |||y |||p |||e ||
 ||__|||__|||__|||__|||__|||__|||__|||__|||__||
 |/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|/__\|`,
@@ -32,13 +41,14 @@ func (m menu) Init() tea.Cmd {
 
 func (m menu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   switch msg := msg.(type) {
+
   case tea.WindowSizeMsg:
-    m.windowHeight = msg.Height
-    m.windowWidth = msg.Width
+    m.windowWidth, m.windowHeight = msg.Width, msg.Height
+
   case tea.KeyMsg:
     switch msg.String() {
     case "n":
-      return test.New(), nil
+      return test.New(m.windowWidth, m.windowHeight), nil
     case "q":
       return m, tea.Quit
     }
@@ -48,26 +58,18 @@ func (m menu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m menu) View() string {
-
-
-  logoStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#00ADD8"))
-  optionStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#CE3262"))
-
   var buf strings.Builder
-  buf.WriteString(logoStyle.Render(m.logo))
-  buf.WriteString("\n\n\n")
+  buf.WriteString(logoStyle.Render(m.logo) + "\n")
   for _, option := range(m.options) {
-    buf.WriteString(optionStyle.Render(option) + "\n")
+    buf.WriteString(optionsStyle.Render(option) + "\n")
   }
 
   menu := buf.String()
-
-  overallStyle := lipgloss.NewStyle().
+  menuStyle := lipgloss.NewStyle(). 
+    Inherit(colors.AppStyle).
     Width(m.windowWidth). 
     Height(m.windowHeight).
-    PaddingTop(m.windowHeight/2 - (lipgloss.Height(menu)/2)).
-    Align(lipgloss.Center)
+    PaddingTop(m.windowHeight/2 - (lipgloss.Height(menu)/2))
 
-
-  return overallStyle.Render(menu)
+  return menuStyle.Render(menu)
 }

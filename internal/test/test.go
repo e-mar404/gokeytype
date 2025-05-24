@@ -5,6 +5,8 @@ type Test struct {
 	text []byte
 	status []status
 	position int
+  windowWidth int
+  windowHeight int
 }
 
 const (
@@ -13,12 +15,14 @@ const (
 	CORRECT
 )
 
-func New() Test {
+func New(width, height int) Test {
   testText, statusSlice := createText()
 	return Test {
 		text: []byte(testText),
 		status: statusSlice, 
 		position: 0,
+    windowWidth: width,
+    windowHeight: height,
 	}
 }
 
