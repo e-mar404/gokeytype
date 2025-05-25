@@ -1,4 +1,4 @@
-package menu
+package models 
 
 import (
 	"strings"
@@ -6,16 +6,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/e-mar404/gokeytype/internal/colors"
-	"github.com/e-mar404/gokeytype/internal/test"
-)
-
-var (
-  logoStyle = colors.Foreground(colors.LAVENDER). 
-    PaddingBottom(3).
-    Background(lipgloss.Color(colors.BASE))
-
-  optionsStyle = colors.Foreground(colors.PINK). 
-    Inherit(colors.AppStyle)
 )
 
 type menu struct {
@@ -25,7 +15,7 @@ type menu struct {
   windowHeight int
 }
 
-func New() menu {
+func NewMenu() menu {
   return menu {
     logo: ` ____ ____ ____ ____ ____ ____ ____ ____ ____
 ||G |||o |||k |||e |||y |||t |||y |||p |||e ||
@@ -48,7 +38,7 @@ func (m menu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   case tea.KeyMsg:
     switch msg.String() {
     case "n":
-      return test.New(m.windowWidth, m.windowHeight), nil
+      return newTest(m.windowWidth, m.windowHeight), nil
     case "q":
       return m, tea.Quit
     }

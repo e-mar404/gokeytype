@@ -1,4 +1,4 @@
-package test
+package models
 
 import (
 	"strings"
@@ -6,6 +6,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/e-mar404/gokeytype/internal/colors"
+	"github.com/e-mar404/gokeytype/internal/stats"
 )
 
 var (
@@ -27,6 +28,46 @@ var (
 )
 type finishMessage string
 
+type status int
+
+type Test struct {
+	text []byte
+	status []status
+	position int
+  windowWidth int
+  windowHeight int
+  stats stats.Stats 
+}
+
+const (
+  Empty status = iota
+	INCORRECT
+	CORRECT
+)
+
+func newTest(width, height int) Test {
+  testText, statusSlice := createText()
+	return Test {
+		text: []byte(testText),
+		status: statusSlice, 
+		position: 0,
+    windowWidth: width,
+    windowHeight: height,
+    stats: stats.Stats {
+      WPM: 10000,
+      Accuracy: 101.00,
+    },
+	}
+}
+
+func createText() ([]byte, []status) {
+  text := []byte("this is a long test")
+  statusSlice:= make([]status, len(text))
+  for i := range(statusSlice) {
+    statusSlice[i] = Empty 
+  }
+  return text, statusSlice
+}
 func (t Test) Init() tea.Cmd{
 	return nil
 }
@@ -60,8 +101,9 @@ func (t Test) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     }
 
   case finishMessage:
-    return t, tea.Quit
+    return newResult(t.stats, t.windowWidth, t.windowHeight), nil 
 	}
+
 	return t, nil
 }
 
