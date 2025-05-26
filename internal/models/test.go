@@ -9,25 +9,8 @@ import (
 	"github.com/e-mar404/gokeytype/internal/stats"
 )
 
-var (
-  correctStyle = lipgloss.NewStyle(). 
-    Inherit(colors.AppStyle)
 
-  incorrectStyle = lipgloss.NewStyle(). 
-    Inherit(colors.AppStyle). 
-    Foreground(lipgloss.Color(colors.RED))
-
-  emptyStyle = lipgloss.NewStyle(). 
-    Inherit(colors.AppStyle). 
-    Foreground(lipgloss.Color(colors.OVERLAY_1))
-
-  cursorStyle = lipgloss.NewStyle(). 
-    Inherit(colors.AppStyle). 
-    Background(lipgloss.Color(colors.WHITE)).
-    Foreground(lipgloss.Color(colors.SURFACE_0))
-)
 type finishMessage string
-
 type status int
 
 type Test struct {
@@ -113,22 +96,22 @@ func (t Test) View() string {
 	for i, letter := range(t.text) {
 		switch t.status[i] {
 		case CORRECT:
-      coloredLetter := correctStyle.Render(string(letter))
+      coloredLetter := colors.CorrectAttemptStyle.Render(string(letter))
 
 			str[i] = coloredLetter
 		case INCORRECT:
       if letter == ' ' {
         letter = '_'
       }
-      coloredLetter := incorrectStyle.Render(string(letter))
+      coloredLetter := colors.IncorrectAttemptStyle.Render(string(letter))
 
 			str[i] = coloredLetter
 		default:
       var coloredLetter string
       if i == t.position {
-        coloredLetter = cursorStyle.Render(string(letter))
+        coloredLetter = colors.CursorStyle.Render(string(letter))
       } else {
-        coloredLetter = emptyStyle.Render(string(letter))
+        coloredLetter = colors.EmptyAttemptStyle.Render(string(letter))
       }
 
 			str[i] = coloredLetter

@@ -49,9 +49,9 @@ func (m menu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m menu) View() string {
   var buf strings.Builder
-  buf.WriteString(logoStyle.Render(m.logo) + "\n")
+  buf.WriteString(colors.LogoStyle.Render(m.logo) + "\n")
   for _, option := range(m.options) {
-    buf.WriteString(optionsStyle.Render(option) + "\n")
+    buf.WriteString(colors.OptionsStyle.Render(option) + "\n")
   }
 
   menu := buf.String()

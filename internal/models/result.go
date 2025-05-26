@@ -47,7 +47,7 @@ func (r result) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (r result) View() string {
   var buf strings.Builder
   for _, option := range(r.options) {
-    buf.WriteString(optionsStyle.Render(option) + "\n")
+    buf.WriteString(colors.OptionsStyle.Render(option) + "\n")
   }
 
   menu := buf.String()
