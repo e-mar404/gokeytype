@@ -7,13 +7,13 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/e-mar404/gokeytype/internal/colors"
 	"github.com/e-mar404/gokeytype/internal/stats"
+	"github.com/e-mar404/gokeytype/internal/text"
 )
 
-
-type finishMessage string
+type finishMsg string
 type status int
-
 type Test struct {
+  errorMsg string
 	text []byte
 	status []status
 	position int
@@ -29,7 +29,19 @@ const (
 )
 
 func newTest(width, height int) Test {
-  testText, statusSlice := createText()
+  wordCount := 10
+  testText, err := text.Generate(wordCount)
+  if err != nil {
+    return Test {
+      errorMsg: err.Error(),
+    }
+  }
+
+  statusSlice := make([]status, len(testText))
+  for i := range(statusSlice) {
+    statusSlice[i] = Empty 
+  }
+
 	return Test {
 		text: []byte(testText),
 		status: statusSlice, 
@@ -43,14 +55,6 @@ func newTest(width, height int) Test {
 	}
 }
 
-func createText() ([]byte, []status) {
-  text := []byte("this is a long test")
-  statusSlice:= make([]status, len(text))
-  for i := range(statusSlice) {
-    statusSlice[i] = Empty 
-  }
-  return text, statusSlice
-}
 func (t Test) Init() tea.Cmd{
 	return nil
 }
@@ -83,7 +87,7 @@ func (t Test) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       return t, finishTest
     }
 
-  case finishMessage:
+  case finishMsg:
     return newResult(t.stats, t.windowWidth, t.windowHeight), nil 
 	}
 
@@ -91,6 +95,10 @@ func (t Test) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (t Test) View() string {
+  if t.errorMsg != "" {
+    return t.errorMsg
+  }
+
   str := make([]string, len(t.text))
 
 	for i, letter := range(t.text) {
@@ -130,5 +138,5 @@ func (t Test) View() string {
 }
 
 func finishTest() tea.Msg {
-  return finishMessage("Test is finished")
+  return finishMsg("Test is finished")
 }
