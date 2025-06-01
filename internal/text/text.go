@@ -2,9 +2,11 @@ package text
 
 import (
 	"bufio"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const wordBankFile = ".english.words"
@@ -28,9 +30,11 @@ func Generate(wordCount int) (string, error) {
     count++
   }
   
+  r := rand.New(rand.NewSource(time.Now().Local().UnixMilli()))
+  wordBankSize := len(wordBank)
   var textList []string
-  for i := range(wordCount) {
-    textList = append(textList, wordBank[i])
+  for range(wordCount) {
+    textList = append(textList, wordBank[r.Intn(wordBankSize)])
   }
 
   return strings.Join(textList, " "), nil
