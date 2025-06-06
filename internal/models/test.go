@@ -28,8 +28,7 @@ const (
 	CORRECT
 )
 
-func newTest(width, height int) Test {
-  wordCount := 10
+func newTest(wordCount, width, height int) Test {
   testText, err := text.Generate(wordCount)
   if err != nil {
     return Test {
@@ -51,6 +50,7 @@ func newTest(width, height int) Test {
     stats: stats.Stats {
       WPM: 10000,
       Accuracy: 101.00,
+      WordCount: wordCount,
     },
 	}
 }
@@ -132,7 +132,6 @@ func (t Test) View() string {
     Width(t.windowWidth). 
     Height(t.windowHeight).
     PaddingTop(t.windowHeight/2 - (lipgloss.Height(text)/2))
-
 
 	return testStyle.Render(text) + "\n"
 }

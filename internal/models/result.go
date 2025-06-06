@@ -34,7 +34,7 @@ func (r result) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   case tea.KeyMsg:
     switch msg.String() {
     case "n":
-      return newTest(r.windowWidth, r.windowHeight), nil
+      return newTest(r.stats.WordCount, r.windowWidth, r.windowHeight), nil
 
     case "q":
       return r, tea.Quit
