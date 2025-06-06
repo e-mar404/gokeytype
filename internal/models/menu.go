@@ -9,14 +9,14 @@ import (
 )
 
 const (
-  MainMenu state = iota
+  MainMenu stage = iota
   WordCountMenu
 )
 
-type state int
+type stage int
 
 type menu struct {
-  state state
+  stage stage
   logo string
   options []option
   selected int
@@ -29,7 +29,7 @@ type option struct {
   cmd tea.Cmd
 }
 
-type testWordCount int 
+type testWordCountMsg int 
 
 func NewMenu() menu {
   return menu {
@@ -78,31 +78,31 @@ func (m menu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       return m, nil
 
     case "enter":
-      switch m.state {
+      switch m.stage {
       case MainMenu:
         m.options = []option{
           option {
             label: "10 words",
-            cmd: newTestWC(10),
+            cmd: newTestCmd(10),
           },
           option {
             label: "25 words",
-            cmd: newTestWC(25),
+            cmd: newTestCmd(25),
           },
           option {
             label: "50 words",
-            cmd: newTestWC(50),
+            cmd: newTestCmd(50),
           },
           option {
             label: "100 words",
-            cmd: newTestWC(100),
+            cmd: newTestCmd(100),
           },
           option {
             label: "Quit",
             cmd: tea.Quit,
           },
         }
-        m.state = WordCountMenu
+        m.stage = WordCountMenu
         return m, nil 
 
       case WordCountMenu:
@@ -113,7 +113,7 @@ func (m menu) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
       return m, tea.Quit
     }
 
-  case testWordCount:
+  case testWordCountMsg:
     return newTest(int(msg), m.windowWidth, m.windowHeight), nil
   }
 
@@ -145,8 +145,8 @@ func (m menu) View() string {
   return menuStyle.Render(menu)
 }
 
-func newTestWC(wc int) func() tea.Msg {
+func newTestCmd(wc int) func() tea.Msg {
   return func() tea.Msg {
-    return testWordCount(wc)
+    return testWordCountMsg(wc)
   } 
 }
