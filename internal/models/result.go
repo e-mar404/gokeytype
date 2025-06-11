@@ -1,6 +1,7 @@
-package models 
+package models
 
 import (
+	"strconv"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -46,6 +47,11 @@ func (r result) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (r result) View() string {
   var buf strings.Builder
+
+  acc := 100 - (float64(r.stats.IncorrectChars) / float64(r.stats.TotalChars) * 100)
+  accStr := strconv.FormatFloat(acc, 'f', 2, 32)
+  buf.WriteString("Accuracy: " + accStr + "%\n")
+
   for _, option := range(r.options) {
     buf.WriteString(colors.OptionsStyle.Render(option) + "\n")
   }

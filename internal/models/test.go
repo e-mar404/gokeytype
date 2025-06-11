@@ -48,9 +48,9 @@ func newTest(wordCount, width, height int) Test {
     windowWidth: width,
     windowHeight: height,
     stats: stats.Stats {
-      WPM: 10000,
-      Accuracy: 101.00,
       WordCount: wordCount,
+      TotalChars: len(testText),
+      IncorrectChars: 0,
     },
 	}
 }
@@ -80,6 +80,7 @@ func (t Test) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			t.status[t.position] = CORRECT
 		} else {
 			t.status[t.position] = INCORRECT
+      t.stats.IncorrectChars++
 		}
 
     t.position++
